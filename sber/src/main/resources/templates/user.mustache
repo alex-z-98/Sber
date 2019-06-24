@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+{{#user}}
+    <div>
+        <b>
+            Image:
+        </b>
+        <img height="200" alt="Image" src="/getImage?id={{id}}"/>
+    </div>
+    <table>
+        <tr><td>Login:</td><td>{{login}}</td></tr>
+        <tr><td>Имя:</td><td>{{name}}</td></tr>
+        <tr><td>Фамилия:</td><td>{{surname}}</td></tr>
+        <tr><td>Адрес:</td><td>{{address}}</td></tr>
+        <tr><td>Дата рождения:</td><td>{{birth}}</td></tr>
+    </table>
+    <div>
+        <b>
+            Info:
+        </b>
+        <p>{{info}}</p>
+    </div>
+{{/user}}
+
+</body>
+
+</html>
