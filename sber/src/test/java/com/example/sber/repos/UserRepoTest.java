@@ -5,10 +5,13 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
 public class UserRepoTest {
 
@@ -21,7 +24,7 @@ public class UserRepoTest {
     @Before
     public void preparation ()
     {
-        Iterable<User> users = userRepo.findAll();
+        //<User> users = userService.userRepo.findAll();
         userRepo.save(user1);
         userRepo.save(user2);
     }

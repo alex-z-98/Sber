@@ -2,7 +2,6 @@ package com.example.sber;
 
 import com.example.sber.domain.User;
 import com.example.sber.repos.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,17 +9,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-
-import java.io.*;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.sql.Date;
+import java.util.Map;
 
 @Controller
 public class GreetingController {
-    @Autowired
-    private UserRepo userRepo;
+
+    private final UserRepo userRepo;
+
+    public GreetingController(UserRepo userRepo) {
+        this.userRepo = userRepo;
+    }
 
     @GetMapping
     public String main(Map<String, Object> model) {
@@ -44,18 +46,15 @@ public class GreetingController {
 
         try {
             user.setBirth(Date.valueOf(birth));
-        }
-        catch (IllegalArgumentException ex)
-        {
+        } catch (IllegalArgumentException ex) {
         }
 
-        if(!photo.isEmpty())
+        if (!photo.isEmpty())
             user.setPhoto(photo.getBytes());
 
 
-        byte[] userFileInfo = info.getBytes();
-        if (userFileInfo != null)
-            user.setInfo(new String(userFileInfo));
+        if (!info.isEmpty())
+            user.setInfo(new String(info.getBytes(), "UTF-8"));
 
 
         userRepo.save(user);
@@ -84,20 +83,20 @@ public class GreetingController {
     }
 
     @GetMapping("getInfo")
-    public String getInfo(@RequestParam Integer id, Map<String, Object> model){
+    public String getInfo(@RequestParam Integer id, Map<String, Object> model) {
         User user;
-        user=userRepo.findFirstById(id);
+        user = userRepo.findFirstById(id);
 
         model.put("user", user);
 
         return "user";
     }
 
-    @PostMapping ("deleteUser")
-    public String deleteUser(@RequestParam Integer id, Map<String, Object> model){
+    @PostMapping("deleteUser")
+    public String deleteUser(@RequestParam Integer id, Map<String, Object> model) {
         userRepo.delete(userRepo.findFirstById(id));
 
-        Iterable<User> users=userRepo.findAll();
+        Iterable<User> users = userRepo.findAll();
 
         model.put("users", users);
 
@@ -106,13 +105,12 @@ public class GreetingController {
 
     @GetMapping("/getImage")
     public void getImage(@RequestParam(required = false, defaultValue = "") Integer id,
-                         HttpServletResponse response) throws IOException
-    {
-        User user = userRepo.findFirstById(id);;
+                         HttpServletResponse response) throws IOException {
+        User user = userRepo.findFirstById(id);
+        ;
 
-        if (user.getPhoto() == null)
-        {
-            byte[] array = Files.readAllBytes(Paths.get(System.getProperty("user.dir")+"\\src\\main\\resources\\images\\defaultImage.jpg"));
+        if (user.getPhoto() == null) {
+            byte[] array = Files.readAllBytes(Paths.get(System.getProperty("user.dir") + "\\src\\main\\resources\\images\\defaultImage.jpg"));
             response.setContentType("image/*");
             response.getOutputStream().write(array);
             response.getOutputStream().close();
@@ -124,9 +122,9 @@ public class GreetingController {
     }
 
     @GetMapping("editInfo")
-    public String editInfo(@RequestParam Integer id, Map<String, Object> model){
+    public String editInfo(@RequestParam Integer id, Map<String, Object> model) {
         User user;
-        user=userRepo.findFirstById(id);
+        user = userRepo.findFirstById(id);
 
         model.put("user", user);
 
@@ -135,14 +133,14 @@ public class GreetingController {
 
     @PostMapping("postChanges")
     public String postChanges(@RequestParam MultipartFile photo,
-                      @RequestParam MultipartFile info,
-                      @RequestParam String login,
-                      @RequestParam String name,
-                      @RequestParam String surname,
-                      @RequestParam String address,
-                      @RequestParam String birth,
-                      @RequestParam Integer id,
-                      Map<String, Object> model) throws IOException {
+                              @RequestParam MultipartFile info,
+                              @RequestParam String login,
+                              @RequestParam String name,
+                              @RequestParam String surname,
+                              @RequestParam String address,
+                              @RequestParam String birth,
+                              @RequestParam Integer id,
+                              Map<String, Object> model) throws IOException {
         User user = userRepo.findFirstById(id);
 
         user.setLogin(login);
@@ -152,16 +150,14 @@ public class GreetingController {
 
         try {
             user.setBirth(Date.valueOf(birth));
-        }
-        catch (IllegalArgumentException ex)
-        {
+        } catch (IllegalArgumentException ex) {
         }
 
         if (!photo.isEmpty())
             user.setPhoto(photo.getBytes());
 
         if (!info.isEmpty())
-            user.setInfo(new String(info.getBytes()));
+            user.setInfo(new String(info.getBytes(), "UTF-8"));
 
         userRepo.save(user);
 
