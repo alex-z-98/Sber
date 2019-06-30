@@ -4,8 +4,11 @@
 <body>
 <div>
     <form method="post" enctype="multipart/form-data">
-        <input type="file" name="photo">
-        <input type="file" name="info">
+        <p>Фото:</p>
+        <input type="file" name="photo" accept="image/*">
+        <p>Информация:</p>
+        <input type="file" name="info" accept="text/*">
+        <p></p>
         <input type="text" name="login" placeholder="Логин" />
         <input type="text" name="name" placeholder="Имя">
         <input type="text" name="surname" placeholder="Фамилия">
