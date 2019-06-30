@@ -79,7 +79,7 @@ public class GreetingController {
 
         model.put("users", users);
 
-        return "main";
+        return "filter";
     }
 
     @GetMapping("getInfo")
@@ -107,18 +107,19 @@ public class GreetingController {
     public void getImage(@RequestParam(required = false, defaultValue = "") Integer id,
                          HttpServletResponse response) throws IOException {
         User user = userRepo.findFirstById(id);
-        ;
 
-        if (user.getPhoto() == null) {
-            byte[] array = Files.readAllBytes(Paths.get(System.getProperty("user.dir") + "\\src\\main\\resources\\images\\defaultImage.jpg"));
+        if (user!=null) {
+            if (user.getPhoto() == null) {
+                byte[] array = Files.readAllBytes(Paths.get(System.getProperty("user.dir") + "\\src\\main\\resources\\images\\defaultImage.jpg"));
+                response.setContentType("image/*");
+                response.getOutputStream().write(array);
+                response.getOutputStream().close();
+                return;
+            }
             response.setContentType("image/*");
-            response.getOutputStream().write(array);
+            response.getOutputStream().write(user.getPhoto());
             response.getOutputStream().close();
-            return;
         }
-        response.setContentType("image/*");
-        response.getOutputStream().write(user.getPhoto());
-        response.getOutputStream().close();
     }
 
     @GetMapping("editInfo")
